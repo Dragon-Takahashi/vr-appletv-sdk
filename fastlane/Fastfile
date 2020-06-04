@@ -23,7 +23,7 @@ platform :ios do
   lane :test do
     scan(
       scheme: "VrInteractiveTracking",
-      device: "iPhone 8",
+      device: "Apple TV",
       code_coverage: true,
       clean: true,
       output_directory: "/Users/distiller/project/fastlane/test_output"

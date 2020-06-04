@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "VrInteractiveTracking"
-  spec.version      = "5.1.3"
+  spec.version      = "5.1.4"
   spec.summary      = "VrInteractiveTracking"
 
   spec.description  = <<-DESC
