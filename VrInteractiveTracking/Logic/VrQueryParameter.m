@@ -9,8 +9,8 @@
 #import "VrQueryParameter.h"
 
 #import <UIKit/UIKit.h>
-#import "../Domain/Counter.h"
-#import "../Domain/UUID.h"
+#import "Counter.h"
+#import "UUID.h"
 
 
 @interface VrQueryParameter()

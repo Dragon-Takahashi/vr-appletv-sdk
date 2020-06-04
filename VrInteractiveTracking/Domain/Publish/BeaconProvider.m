@@ -8,7 +8,7 @@
 
 #import "BeaconProvider.h"
 
-#import "../Opt.h"
+#import "Opt.h"
 
 @interface BeaconProvider()
 @property (nonatomic) BeaconPublisher *beaconPublisher;

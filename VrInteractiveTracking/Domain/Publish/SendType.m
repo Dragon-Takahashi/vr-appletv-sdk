@@ -8,8 +8,8 @@
 
 #import "SendType.h"
 
-#import "../../Infra/SendHttpRepository.h"
-#import "../../Infra/SendNullRepository.h"
+#import "SendHttpRepository.h"
+#import "SendNullRepository.h"
 
 @interface SendType()
 @property (nonatomic, readwrite) BeaconStrategy *strategy;

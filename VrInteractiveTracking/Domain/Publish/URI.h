@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "../Model/QuerySpec.h"
-#import "../Config/ConfigFileProvider.h"
+#import "QuerySpec.h"
+#import "ConfigFileProvider.h"
 
 /**
  URIクラス

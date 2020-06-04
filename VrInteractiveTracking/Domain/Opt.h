@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Model/QuerySpec.h"
+#import "QuerySpec.h"
 
 /**
  オプトイン・オプトアウト処理クラス

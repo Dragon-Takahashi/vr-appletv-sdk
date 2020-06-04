@@ -8,7 +8,7 @@
 
 #import "SendHttpRepository.h"
 
-#import "../Domain/VRIException.h"
+#import "VRIException.h"
 
 @implementation SendHttpRepository
 

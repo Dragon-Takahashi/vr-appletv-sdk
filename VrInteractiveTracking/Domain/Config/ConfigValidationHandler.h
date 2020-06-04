@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "../Model/ValidationHandler.h"
+#import "ValidationHandler.h"
 
 /**
  設定ファイル検証ハンドラークラス

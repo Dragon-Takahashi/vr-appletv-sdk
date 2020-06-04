@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 
 #import "TrackingStrategy.h"
-#import "../VrInteractiveTrackingSpec.h"
+#import "VrInteractiveTrackingSpec.h"
 #import "OptValues.h"
-#import "../Domain/SessionID.h"
+#import "SessionID.h"
 
 extern NSString *const VR_LIB_DEFAULT_LOCAL_FILE_IDENTITY;
 extern NSString *const VR_LIB_DEFAULT_FILE_NAME;

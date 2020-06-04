@@ -8,7 +8,7 @@
 
 #import "ConfigValidationHandler.h"
 
-#import "../Model/ValidationError.h"
+#import "ValidationError.h"
 
 @interface ConfigValidationHandler()
 @property (nonatomic) NSMutableArray *errorList;

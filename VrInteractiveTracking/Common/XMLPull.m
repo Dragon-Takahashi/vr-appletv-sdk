@@ -8,7 +8,7 @@
 
 #import "XMLPull.h"
 
-#import "../Domain/VRIException.h"
+#import "VRIException.h"
 
 @interface XMLPull()
 @property (nonatomic) NSString *date;

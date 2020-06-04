@@ -10,9 +10,9 @@
 #define TrackingStrategy_h
 
 #import "TrackingStrategy.h"
-#import "../VrInteractiveTrackingSpec.h"
-#import "../Domain/Model/OptValues.h"
-#import "../VrInteractiveBeaconSpec.h"
+#import "VrInteractiveTrackingSpec.h"
+#import "OptValues.h"
+#import "VrInteractiveBeaconSpec.h"
 
 typedef void (^FinishSendBeaconBlock) (BOOL result);
 typedef void (^FinishSetOptoutBlock) (BOOL result);

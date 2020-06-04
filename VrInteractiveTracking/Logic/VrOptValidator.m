@@ -8,7 +8,7 @@
 
 #import "VrOptValidator.h"
 
-#import "../Domain/Range.h"
+#import "Range.h"
 
 @interface VrOptValidator()
 @property (nonatomic)int optId;

@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-#import "../Domain/Model/QueryParameters.h"
+#import "QueryParameters.h"
 #import "VrInteractiveTrackingSpec.h"
-#import "../VrInteractiveBeaconSpec.h"
-#import "../Domain/Config/ConfigFile.h"
+#import "VrInteractiveBeaconSpec.h"
+#import "ConfigFile.h"
 
 /**
  固有クエリパラメータ生成クラス

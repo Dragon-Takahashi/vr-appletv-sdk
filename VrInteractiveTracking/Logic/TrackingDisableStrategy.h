@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 
 #import "TrackingStrategy.h"
-#import "../VrInteractiveTrackingSpec.h"
-#import "../Domain/Model/OptValues.h"
+#import "VrInteractiveTrackingSpec.h"
+#import "OptValues.h"
 
 typedef void (^FinishSendBeaconBlock) (BOOL result);
 typedef void (^FinishSetOptoutBlock) (BOOL result);
