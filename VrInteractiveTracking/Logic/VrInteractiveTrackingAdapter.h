@@ -9,12 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "../Domain/Publish/BeaconProvider.h"
-#import "../Domain/Config/ConfigFileProvider.h"
-#import "../Domain/Model/QuerySpec.h"
-#import "../Domain/Model/OptValues.h"
-#import "../VrInteractiveTrackingSpec.h"
-#import "../VrInteractiveBeaconSpec.h"
+#import "BeaconProvider.h"
+#import "ConfigFileProvider.h"
+#import "QuerySpec.h"
+#import "OptValues.h"
+#import "VrInteractiveTrackingSpec.h"
+#import "VrInteractiveBeaconSpec.h"
 
 typedef void (^FinishSetOptoutBlock) (BOOL result);
 typedef void (^FinishSetOptinBlock) (BOOL result);

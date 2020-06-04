@@ -8,10 +8,10 @@
 
 #import "OldTableRepositoryImpl.h"
 
-#import "../HouseKeeper/HouseKeeper.h"
-#import "../Domain/UUID.h"
+#import "HouseKeeper.h"
+#import "UUID.h"
 #import <CommonCrypto/CommonDigest.h>
-#import "../Domain/VRIException.h"
+#import "VRIException.h"
 
 @implementation OldTableRepositoryImpl
 

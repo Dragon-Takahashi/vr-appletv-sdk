@@ -8,7 +8,7 @@
 
 #import "QueryParameters.h"
 
-#import "../VRIException.h"
+#import "VRIException.h"
 
 @implementation QueryParameters
 

@@ -8,10 +8,10 @@
 
 #import "URI.h"
 
-#import "../../Common/Encoder.h"
-#import "../UUID.h"
-#import "../../Logic/VrInteractiveTrackingAdapter.h"
-#import "../../Logic/VrQueryParameter.h"
+#import "Encoder.h"
+#import "UUID.h"
+#import "VrInteractiveTrackingAdapter.h"
+#import "VrQueryParameter.h"
 
 @interface URI()
 @property (nonatomic, copy) NSString *baseUrl;

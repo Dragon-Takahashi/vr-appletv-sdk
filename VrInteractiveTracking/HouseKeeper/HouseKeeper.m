@@ -7,7 +7,7 @@
 //
 
 #import "HouseKeeper.h"
-#import "../Infra/OldTableRepositoryImpl.h"
+#import "OldTableRepositoryImpl.h"
 
 
 @implementation HouseKeeper

@@ -8,7 +8,7 @@
 
 #import "Encoder.h"
 
-#import "../Domain/VRIException.h"
+#import "VRIException.h"
 
 @implementation Encoder
 

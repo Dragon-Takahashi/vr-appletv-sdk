@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 
 #import "ConfigValidationHandler.h"
-#import "../Model/Validator.h"
-#import "../Model/ValidationError.h"
+#import "Validator.h"
+#import "ValidationError.h"
 #import "ConfigFile.h"
 
 /**

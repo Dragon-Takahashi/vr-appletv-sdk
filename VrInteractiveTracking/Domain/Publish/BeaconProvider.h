@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "../Model/QuerySpec.h"
-#import "../Config/ConfigProvider.h"
+#import "QuerySpec.h"
+#import "ConfigProvider.h"
 #import "BeaconPublisher.h"
 
 /**

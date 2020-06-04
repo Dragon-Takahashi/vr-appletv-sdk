@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "../Domain/Publish/SendRepository.h"
-#import "../Domain/Publish/BeaconEvent.h"
-#import "../Domain/Publish/Response.h"
+#import "SendRepository.h"
+#import "BeaconEvent.h"
+#import "Response.h"
 
 /**
  ビーコン非送信クラス
