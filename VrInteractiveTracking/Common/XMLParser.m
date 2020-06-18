@@ -11,9 +11,12 @@
 @interface XMLParser() {
     
     __block NSXMLParser *xmlParser;
-    __block NSMutableDictionary *parseResult;
+    __block NSMutableArray *parseResult;
+    __block NSMutableDictionary *parseElementDic;
     __block NSString *parseElement;
     __block NSDictionary *parseDict;
+    __block NSString *parseIdentity;
+    __block BOOL isMultipulConfig;
     
     __block NSString *filePath;
     __block NSString *identity;
@@ -48,12 +51,13 @@
     dispatch_async(reentrantAvoidanceQueue, ^{
         @try {
             // 結果保存用の変数を初期化
-            parseResult = [[NSMutableDictionary alloc] init];
+            parseResult = NSMutableArray.new;
+
             
             // NSXMLParserを初期化
             if ([filePath length] == 0) {
                 if (_listener) {
-                    _listener(parseResult, identity, filePath, date, isRemoteFile);
+                    _listener(parseResult, isRemoteFile);
                 }
                 return;
             }
@@ -66,14 +70,12 @@
             xmlParser.delegate = nil;
             xmlParser = nil;
             
-            NSLog(@"ParseXML result = %@", isFinished ? @"YES" : @"NO");
+            DLog(@"ParseXML result = %@", isFinished ? @"YES" : @"NO");
+
             dispatch_semaphore_signal(semaphore);
         } @catch (NSException *exception) {
-            NSLog(@"ParseXML berror : %@",[exception reason]);
-            //        dispatch_async(dispatch_get_main_queue(), ^{
-            //            // メインスレッドで処理をしたい内容、UIを変更など。
-            //            @throw exception;
-            //        });
+            DLog(@"ParseXML berror : %@",[exception reason]);
+            
             dispatch_semaphore_signal(semaphore);
         }
         
@@ -86,8 +88,8 @@
 
 //デリゲートメソッド(解析開始時)
 -(void) parserDidStartDocument:(NSXMLParser *)parser{
-    NSLog(@"解析開始");
-    
+    DLog(@"解析開始");
+    isMultipulConfig = NO;
 }
 
 //デリゲートメソッド(要素の開始タグを読み込んだ時)
@@ -97,12 +99,19 @@ didStartElement:(NSString *)elementName
   qualifiedName:(NSString *)qName
      attributes:(NSDictionary *)attributeDict{
     
-//    NSLog(@"要素の開始タグを読み込んだ:%@",elementName);
+//    DLog(@"要素の開始タグを読み込んだ:%@",elementName);
     
-    // コンフィグタグは読み込まない
-    if ([elementName isEqualToString:@"config"]) {
+    // config(s)タグは読み込まない
+    if ([elementName isEqualToString:@"configs"] ) {
+        isMultipulConfig = YES;
         return;
     }
+    if ([elementName isEqualToString:@"config"]) {
+        parseElementDic = NSMutableDictionary.new;
+        parseIdentity = nil;
+        return;
+    }
+
     
     parseElement = elementName;
     parseDict = attributeDict;
@@ -119,11 +128,15 @@ didStartElement:(NSString *)elementName
     
 //    NSLog(@"タグ以外のテキストを読み込んだ:%@", string);
     if ([parseElement isEqualToString:@"beacon_url"]) {
-        parseResult[parseElement] = [parseDict objectForKey:@"default"];
+        parseElementDic[parseElement] = [parseDict objectForKey:@"default"];
     }else {
-        parseResult[parseElement] = string;
+        parseElementDic[parseElement] = string;
     }
     
+    if ([parseElement isEqualToString:@"identity"]) {
+        parseIdentity = string;
+    }
+
 }
 
 //デリゲートメソッド(要素の終了タグを読み込んだ時)
@@ -132,7 +145,17 @@ didStartElement:(NSString *)elementName
    namespaceURI:(NSString *)namespaceURI
   qualifiedName:(NSString *)qName{
     
-//    NSLog(@"要素の終了タグを読み込んだ:%@",elementName);
+//    DLog(@"要素の終了タグを読み込んだ:%@",elementName);
+    
+    
+    if ([elementName isEqualToString:@"config"]) {
+        
+        if (!isMultipulConfig) {
+            [parseResult addObject:[self elementToConfigFileWithIdentity:identity filePath:filePath elements:parseElementDic]];
+        }else if (parseIdentity.length != 0){
+            [parseResult addObject:[self elementToConfigFileWithIdentity:parseIdentity filePath:filePath elements:parseElementDic]];
+        }
+    }
     
     parseElement = nil;
     parseDict = nil;
@@ -142,9 +165,9 @@ didStartElement:(NSString *)elementName
 -(void) parserDidEndDocument:(NSXMLParser *)parser{
     
     // 確認用
-    NSLog(@"parse result : %@", [parseResult description]);
+    DLog(@"parse result : %@", [parseResult description]);
     
-    NSLog(@"解析終了");
+    DLog(@"解析終了");
     
     // メモリ解放
     xmlParser.delegate = nil;
@@ -152,12 +175,38 @@ didStartElement:(NSString *)elementName
     
     // ConfigFileクラスに結果をコールバック
     if (_listener) {
-        _listener(parseResult, identity, filePath, date, isRemoteFile);
+        _listener(parseResult, isRemoteFile);
+
     }else {
-        NSLog(@"Listener is nil");
+        DLog(@"Listener is nil");
     }
+}
+
+- (ConfigFile *)elementToConfigFileWithIdentity:(NSString *)identity filePath:(NSString *)filePath elements:(NSMutableDictionary *)elements {
+    ConfigFile *configFile = [[ConfigFile alloc] initWithParams:[elements copy]];
+    configFile.identity = identity;
+    configFile.filePath = filePath;
+    configFile.date = [self castStringToDate:date];
+    return configFile;
+}
+
+/**
+ * 日時のキャスト
+ * 想定例：Wed, 10 Oct 2018 07:13:44 GMT
+ *
+ * @param dateStr キャスト前の日時
+ *
+ * @return キャスト後の日時
+ */
+- (NSDate*) castStringToDate:(NSString*) dateStr {
     
+    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"E, d MMM yyyy HH:mm:ss Z"];
+    //タイムゾーンの指定
+    [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
     
+    NSDate *date = [formatter dateFromString:dateStr];
+    return date;
 }
 
 
