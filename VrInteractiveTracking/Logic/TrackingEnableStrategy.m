@@ -10,16 +10,16 @@
 
 #import "SendAcceptor.h"
 #import "VrQueryParameter.h"
-#import "HouseKeeper.h"
-#import "Counter.h"
-#import "UUID.h"
-#import "Opt.h"
-#import "ConfigFileProvider.h"
-#import "ConfigMediator.h"
-#import "QuerySpec.h"
-#import "VrOptValidator.h"
-#import "BeaconProvider.h"
-#import "ReplaceConfig.h"
+#import "../HouseKeeper/HouseKeeper.h"
+#import "../Domain/Counter.h"
+#import "../Domain/UUID.h"
+#import "../Domain/Opt.h"
+#import "../Domain/Config/ConfigFileProvider.h"
+#import "../Domain/Config/ConfigMediator.h"
+#import "../Domain/Model/QuerySpec.h"
+#import "../Logic/VrOptValidator.h"
+#import "../Domain/Publish/BeaconProvider.h"
+#import "../Domain/ReplaceConfig.h"
 
 
 NSString *const VR_LIB_DEFAULT_LOCAL_FILE_IDENTITY = @"default";
@@ -364,6 +364,9 @@ NSString *const VR_LIB_DEFAULT_FILE_NAME = @"vrTrackingConfig";
  */
 - (void)loadConfig:(NSString *)identity fileName:(NSString *)fileName finishBlock:(FinishLoadBlock)finishBlock {
     NSLog(@"loadConfig is start %@, instance is %@",identity, finishBlock);
+    if ([identity length] == 0 || [fileName length] == 0) {
+        @throw [[NSException alloc] initWithName:@"NullException" reason:@"Invalid argument value." userInfo:nil];
+    }
     [_loadBlockManager addBlock:identity finishBlock:finishBlock];
     [_acceptor updateWithIdentity:identity state:NO];
     [_configFileProvider addConfigWithIdentity:identity fileName:fileName];

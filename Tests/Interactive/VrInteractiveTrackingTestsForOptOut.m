@@ -2088,8 +2088,8 @@
         [tracking loadConfig:nil fileName:nil finishBlock:^(BOOL result) {
             
             // 前提：ユーザーがオプトアウトしている。nilのidentityで設定ファイルを読み込んでいる
-            // 想定：identityがdefaultとしてコールバックが登録されているので、trueで返ってくることを確認
-            XCTAssertTrue(result == YES);
+            // 想定：fileNameがnilなので、falseで返ってくることを確認
+            XCTAssertTrue(result == NO);
             
             [expectation fulfill];
         }];
@@ -2113,8 +2113,8 @@
         [tracking loadConfig:@"" fileName:@"" finishBlock:^(BOOL result) {
             
             // 前提：ユーザーがオプトアウトしている。空文字のidentityで設定ファイルを読み込んでいる
-            // 想定：identityがdefaultとしてコールバックが登録されているので、trueで返ってくることを確認
-            XCTAssertTrue(result == YES);
+            // 想定：fileNameが空なので、falseで返ってくることを確認
+            XCTAssertTrue(result == NO);
             
             [expectation fulfill];
         }];
@@ -2138,7 +2138,7 @@
     __block VrInteractiveTracking *tracking;
     tracking = [data withClass:self withAppName:@"test_app_name" withEventName:@"test_event_name" withMonitorId:@"test_monitor_id" finishInitBlock:^(BOOL result) {
         
-        [tracking loadConfig:@"test" fileName:@"TestVrTrackingConfig" finishBlock:^(BOOL result) {
+        [tracking loadConfig:@"test" fileName:@"vrTrackingConfig" finishBlock:^(BOOL result) {
             NSLog(@"isCheckedLoadConfigRunning result : %@", result?@"YES":@"NO");
             // 前提：ユーザーがオプトアウトしている。"test"というidentityで設定ファイルを読みが完了している
             // 想定：読み込みが完了しているので、isCheckedLoadConfigRunning=falseなのを確認
