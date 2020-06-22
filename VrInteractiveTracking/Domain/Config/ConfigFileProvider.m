@@ -176,80 +176,74 @@
     XMLParser *xmlParser = [[XMLParser alloc] init];
     [xmlParser parseXML:filePath identity:identity date:date isRemoteFile:isRemoteFile callback:^(NSMutableArray *configFileArray, BOOL isRemoteFile) {
 
-        BOOL hasRemote = NO;
-        for (ConfigFile *configFile in configFileArray) {
+            BOOL hasRemote = NO;
+            for (ConfigFile *configFile in configFileArray) {
 
-            @try {
-                // 正常ファイルか判断
-                ConfigValidator *validator = [[ConfigValidator alloc] initWithValidationHandler:[ConfigValidationHandler new] config:configFile];
-                configFile.isNormal = ![[validator handler] errors];
-                NSLog(@"Validate result = %@", configFile.isNormal?@"YES":@"NO");
-                
-                if (![[validator handler] errors]) {
-                    // リストに存在しなければリストに追加、あれば上書き
-                    [_configFileList setObject:configFile forKey:[configFile getIdentity]];
-                }else {
-                    //            NSLog(@"XML parse error in parseXMLWithFilePath %@",[[validator handler] toString]);
-                    @throw [VRIException exceptionWithMessage:[[validator handler] toString]];
-                }
-                
-                
-                // ローカル
-                if (!isRemoteFile) {
-                    NSLog(@"End Local file");
-                    // config_urlの値に値があれば取得する
-                    if (![self isCheckedConfigUrl:configFile] || !configFile.isNormal) {
-                        NSLog(@"1");
-                        [self callbackIdentity:[configFile getIdentity]];
-                    } else {
-                        NSLog(@"2");
-                        hasRemote = YES;
-                        // リモート設定ファイルを取得
-                        ConfigQueParams *param = [ConfigQueParams new];
-                        param.identity = identity;
-                        if ([identity isEqualToString:VR_LIB_DEFAULT_LOCAL_FILE_IDENTITY] && [_outsideConfigURL length] != 0) {
-                            param.filePath = _outsideConfigURL;
-                        }else {
-                            param.filePath = configFile.getConfig_Url;
+                @try {
+                    // 正常ファイルか判断
+                    ConfigValidator *validator = [[ConfigValidator alloc] initWithValidationHandler:[ConfigValidationHandler new] config:configFile];
+                    configFile.isNormal = ![[validator handler] errors];
+                    NSLog(@"Validate result = %@", configFile.isNormal?@"YES":@"NO");
+                    
+                    if (![[validator handler] errors]) {
+                        // リストに存在しなければリストに追加、あれば上書き
+                        [_configFileList setObject:configFile forKey:[configFile getIdentity]];
+                    }else {
+                        //            NSLog(@"XML parse error in parseXMLWithFilePath %@",[[validator handler] toString]);
+                        @throw [VRIException exceptionWithMessage:[[validator handler] toString]];
+                    }
+                    
+                    
+                    // ローカル
+                    if (!isRemoteFile) {
+                        NSLog(@"End Local file");
+                        // config_urlの値に値があれば取得する
+                        if (![self isCheckedConfigUrl:configFile] || !configFile.isNormal) {
+                            NSLog(@"1");
+                        } else {
+                            NSLog(@"2");
+                            hasRemote = YES;
+                            // リモート設定ファイルを取得
+                            ConfigQueParams *param = [ConfigQueParams new];
+                            param.identity = identity;
+                            if ([identity isEqualToString:VR_LIB_DEFAULT_LOCAL_FILE_IDENTITY] && [_outsideConfigURL length] != 0) {
+                                param.filePath = _outsideConfigURL;
+                            }else {
+                                param.filePath = configFile.getConfig_Url;
+                            }
+                            NSLog(@"3");
+                            
+                            [_configFileList setObject:configFile forKey:[configFile getIdentity]];
+                            
+                            [self initConfig:param];
                         }
-                        NSLog(@"3");
-                        // 仮のConfigを仕込んでおく（リモートファイルを取得後は上書きする）
-                        [_configFileList setObject:configFile forKey:identity];
-                        
-                        [self initConfig:param];
+                    }
+                    // リモート
+                    else {
+                        [_configFileList setObject:configFile forKey:[configFile getIdentity]];
+                    }
+                } @catch (NSException *exception) {
+                    DLog(@"%@", [exception reason]);
+                    // 何もないと困るので、最低限isNormalがFalseの設定ファイルをセット
+                    if (![_configFileList objectForKey:[configFile getIdentity]]) {
+                        configFile.isNormal = NO;
+                        [_configFileList setObject:configFile forKey:[configFile getIdentity]];
                     }
                 }
-                // リモート
-                else {
-                    [self callbackIdentity:[configFile getIdentity]];
-                }
-            } @catch (NSException *exception) {
-                DLog(@"%@", [exception reason]);
-                // 何もないと困るので、最低限isNormalがFalseの設定ファイルをセット
-                if (![_configFileList objectForKey:[configFile getIdentity]]) {
-                    configFile.isNormal = NO;
-                    [_configFileList setObject:configFile forKey:[configFile getIdentity]];
-                }
-                [self callbackIdentity:[configFile getIdentity]];
             }
-        }
-        
-        if (!hasRemote) {
-            [self callbackIdentity:identity];
-        }
-        [self finish];
-        
-    }];
+            
+            if (!hasRemote) {
+                [self finish:identity];
+            }
+        }];
 }
 
-- (void)callbackIdentity:(NSString *)identity {
-    // コールバック
-    _listener(NO, identity);
-}
 
-- (void)finish {
+- (void)finish:(NSString *)identity {
     // 実行したキューを削除
     [_configQue removeObjectAtIndex:0];
+    // コールバック
+    _listener(NO, identity);
     // 作業フラグを下ろす
     _isRunning = NO;
     // 処理が終了したので、次のキューを実行
@@ -304,8 +298,7 @@
             
             if ([configFilePath length] == 0) {
                 NSLog(@"Cloud config file is nil");
-                [self callbackIdentity:identity];
-                [self finish];
+                [self finish:identity];
                 return;
             }else {
                 
